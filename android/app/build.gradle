@@ -25,6 +25,7 @@ if (flutterVersionName == null) {
 android {
     namespace "com.example.task_manager"
     compileSdkVersion flutter.compileSdkVersion
+    //compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -47,6 +48,8 @@ android {
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
+        /*minSdkVersion 21 // Update this if your plugins require a higher minSdkVersion
+        targetSdkVersion 34*/
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
