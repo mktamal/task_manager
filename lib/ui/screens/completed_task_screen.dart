@@ -29,7 +29,7 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: RefreshIndicator(
-        onRefresh: () async{
+        onRefresh: () async {
           _getCompletedTasks();
         },
         child: Visibility(
@@ -40,6 +40,9 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
             itemBuilder: (context, index) {
               return TaskItem(
                 taskModel: completedTasks[index],
+                onUpdateTask: () {
+                  _getCompletedTasks();
+                },
               );
             },
           ),
@@ -54,10 +57,11 @@ class _CompletedTaskScreenState extends State<CompletedTaskScreen> {
       setState(() {});
     }
 
-    NetworkResponse response = await NetworkCaller.getRequest(Urls.completedTasks);
+    NetworkResponse response =
+        await NetworkCaller.getRequest(Urls.completedTasks);
     if (response.isSuccess) {
       TaskListWrapperModel taskListWrapperModel =
-      TaskListWrapperModel.fromJson(response.responseData);
+          TaskListWrapperModel.fromJson(response.responseData);
 
       completedTasks = taskListWrapperModel.taskList ?? [];
     } else {
