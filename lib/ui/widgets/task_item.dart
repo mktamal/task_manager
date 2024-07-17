@@ -77,28 +77,7 @@ class _TaskItemState extends State<TaskItem> {
                     Visibility(
                       visible: _editInProgress == false,
                       replacement: const CenteredProgressIndicator(),
-                      child: PopupMenuButton<String>(
-                        icon: const Icon(Icons.edit),
-                        onSelected: (String selectedValue) {
-                          dropdownValue = selectedValue;
-                          if (mounted) {
-                            setState(() {});
-                          }
-                        },
-                        itemBuilder: (BuildContext context) {
-                          return statusList.map((String value) {
-                            return PopupMenuItem<String>(
-                              value: value,
-                              child: ListTile(
-                                title: Text(value),
-                                trailing: dropdownValue == value
-                                    ? const Icon(Icons.done)
-                                    : null,
-                              ),
-                            );
-                          }).toList();
-                        },
-                      ),
+                      child: _buildEditButton(),
                     ),
                   ],
                 ),
@@ -108,6 +87,54 @@ class _TaskItemState extends State<TaskItem> {
         ),
       ),
     );
+  }
+
+  Widget _buildEditButton() {
+    return PopupMenuButton<String>(
+      icon: const Icon(Icons.edit),
+      onSelected: (String selectedValue) {
+
+        dropdownValue = selectedValue;
+
+        _updateTask(dropdownValue);
+      },
+      itemBuilder: (BuildContext context) {
+        return statusList.map((String value) {
+          return PopupMenuItem<String>(
+            value: value,
+            child: ListTile(
+              title: Text(value),
+              trailing: dropdownValue == value ? const Icon(Icons.done) : null,
+            ),
+          );
+        }).toList();
+      },
+    );
+  }
+
+  Future<void> _updateTask(String status) async {
+    _editInProgress = true;
+    if (mounted) {
+      setState(() {});
+    }
+
+    NetworkResponse response =
+    await NetworkCaller.getRequest(
+        Urls.updateTaskStatus(widget.taskModel.sId!,status));
+    if (response.isSuccess) {
+      widget.onUpdateTask();
+    } else {
+      if (mounted) {
+        showSnackBarMessage(
+            context,
+            response.errorMessage ??
+                'Update status failed, try again.');
+      }
+    }
+    _editInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   Future<void> _deleteTask() async {

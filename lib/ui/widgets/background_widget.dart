@@ -13,8 +13,8 @@ class BackgroundWidget extends StatelessWidget {
       children: [
         SvgPicture.asset(
           AssetPaths.backgroundSvg,
-          height: double.maxFinite,
-          width: double.maxFinite,
+          height: MediaQuery.sizeOf(context).height,
+          width: MediaQuery.sizeOf(context).width,
           fit: BoxFit.cover,
         ),
         child,
